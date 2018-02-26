@@ -4,18 +4,26 @@ import { NgModule } from '@angular/core';
 import { AppComponent } from './app.component';
 import { BikeDataViewComponent } from './components/bike-data-view/bike-data-view.component';
 import { GetBikeDataService } from "./services/getBikeData/get-bike-data.service";
-import { HttpClientModule} from "@angular/common/http";
+import { GetAddressService } from "./services/getAddress/get-address.service";
+import { HttpClientModule } from "@angular/common/http";
 
+import {} from '@types/googlemaps';
+import {AgmCoreModule, GoogleMapsAPIWrapper} from "@agm/core";
+
+declare var google:any;
 @NgModule({
   declarations: [
     AppComponent,
-    BikeDataViewComponent
+    BikeDataViewComponent,
   ],
   imports: [
     BrowserModule,
-    HttpClientModule
+    HttpClientModule,
+    AgmCoreModule.forRoot({
+      apiKey: 'AIzaSyB65iaJJiE2r_pULN6ltUVZqgY9HshHWqA'
+    })
   ],
-  providers: [GetBikeDataService],
+  providers: [GetBikeDataService, GoogleMapsAPIWrapper, GetAddressService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
