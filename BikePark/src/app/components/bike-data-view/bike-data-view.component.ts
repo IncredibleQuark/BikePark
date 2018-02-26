@@ -1,41 +1,43 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {GetBikeDataService} from "../../services/getBikeData/get-bike-data.service";
 import {GetAddressService} from "../../services/getAddress/get-address.service";
 import {} from '@types/googlemaps';
-import {MapsAPILoader} from "@agm/core";
-import {GoogleMapsAPIWrapper} from "@agm/core";
 import * as _ from 'lodash';
-
-declare var google: any;
-
 
 @Component({
   selector: 'app-bike-data-view',
   templateUrl: './bike-data-view.component.html',
   styleUrls: ['./bike-data-view.component.css']
 })
+
 export class BikeDataViewComponent implements OnInit {
 
-
   private loaded: boolean;
-  private opened: boolean;
   private userPosition: any;
-
-  BikePark: any;
+  private BikePark: any;
+  private parkLat: number;
+  private parkLng: number;
+  private userLat: number;
+  private userLng: number;
+  private map: any;
 
   constructor(private GetBikeDataService: GetBikeDataService,
-              private GetAddressService: GetAddressService,
-              private mapsApiLoader: MapsAPILoader,
-              private gmapsApi: GoogleMapsAPIWrapper) {
+              private GetAddressService: GetAddressService) {
   }
 
   ngOnInit() {
     this.loaded = false;
-
     this.getUserPosition();
+    this.loadData();
+  }
 
+  loadData() {
     this.GetBikeDataService.getBikeData().subscribe((data: any) => {
       this.BikePark = data.features;
+
+      //just initial position on the map
+      this.parkLat = this.BikePark[0].geometry.coordinates[1];
+      this.parkLng = this.BikePark[0].geometry.coordinates[0];
 
       if (this.userPosition) {
         _.forEach(data.features, (item) => {
@@ -44,15 +46,17 @@ export class BikeDataViewComponent implements OnInit {
           const latLng: string = `${item.geometry.coordinates[1]}, ${item.geometry.coordinates[0]}`;
 
           this.GetAddressService.getAddress(latLng).subscribe((data: any) => {
+
             let res = data.results[0];
             if (res) {
               item.address = res.formatted_address
             } else {
               item .address = 'Poznań, somewhere';
+              console.warn('Probably api requests limit exceeded');
             }
 
           }, (err) => {
-            console.warn('Probably api requests limit exceeded', err);
+            console.warn(err);
           });
         });
 
@@ -66,7 +70,6 @@ export class BikeDataViewComponent implements OnInit {
     }, (err) => {
       console.error('something went wrong', err);
     });
-
   }
 
 
@@ -78,6 +81,8 @@ export class BikeDataViewComponent implements OnInit {
 
   setUserPosition(pos) {
     this.userPosition = pos;
+    this.userLat = this.userPosition.coords.latitude;
+    this.userLng = this.userPosition.coords.longitude;
   }
 
   calculateDistance(lat2: number, long2: number) {
@@ -93,13 +98,22 @@ export class BikeDataViewComponent implements OnInit {
     return Math.round(dis * 100) / 100;
   }
 
-  toggleMap() {
-    this.opened = !this.opened;
-    this.gmapsApi.getNativeMap().then(map => {
-      console.warn(map.getBounds());
-    }, (err) => {
-      console.warn(err);
-    });
+  public storeMapReady(map){
+    this.map = map;
+    this.map.fitBounds(this.findStoresBounds());
+  }
+
+  public findStoresBounds(){
+      let bounds:any = new google.maps.LatLngBounds();
+      bounds.extend(new google.maps.LatLng(this.userLat, this.userLng));
+      bounds.extend(new google.maps.LatLng(this.parkLat, this.parkLng));
+    return bounds;
+  }
+
+  toggleMap(event) {
+    const id = event.currentTarget.id;
+    this.parkLat = this.BikePark[id].geometry.coordinates[1];
+    this.parkLng = this.BikePark[id].geometry.coordinates[0];
   }
 
 }

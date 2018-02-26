@@ -7,10 +7,8 @@ import { GetBikeDataService } from "./services/getBikeData/get-bike-data.service
 import { GetAddressService } from "./services/getAddress/get-address.service";
 import { HttpClientModule } from "@angular/common/http";
 
-import {} from '@types/googlemaps';
 import {AgmCoreModule, GoogleMapsAPIWrapper} from "@agm/core";
 
-declare var google:any;
 @NgModule({
   declarations: [
     AppComponent,

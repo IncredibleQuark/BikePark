@@ -1,13 +1,18 @@
 <div *ngIf="loaded" class="flex">
-  <div class="map" *ngIf="opened">
-    <!--<agm-map [latitude]="lat" [longitude]="lng" [fitBounds]="bounds">-->
-      <!--<agm-marker [latitude]="lat" [longitude]="lng"></agm-marker>-->
-      <!--<agm-marker [latitude]="lat2" [longitude]="lng2"></agm-marker>-->
-    <!--</agm-map>-->
-    <div id="map"></div>
-  </div>
-  <div *ngFor="let item of BikePark" class="container-parking" (click)="toggleMap(this)">
 
+  <div class="map">
+    <!--TODO bike marker should be imported as component? or directive? so we can provide variable into svg-->
+    <agm-map (mapReady)="storeMapReady($event)"
+             [latitude]="parkLat"
+             [longitude]="parkLng"
+             [panControl]="false"
+             [streetViewControl]="false">
+      <agm-marker [iconUrl]="'../../../assets/bikeIcon.svg'" [latitude]="parkLat" [longitude]="parkLng"></agm-marker>
+      <agm-marker [iconUrl]="'../../../assets/locationIcon.svg'" [latitude]="userLat" [longitude]="userLng"></agm-marker>
+    </agm-map>
+  </div>
+
+  <div *ngFor="let item of BikePark let i = index" class="container-parking" (click)="toggleMap($event)" id= {{i}} attr.geo="{{item.geometry.coordinates}}">
 
     <div class="wrapper">
       <div>
@@ -95,47 +100,6 @@
       </div>
 
 
-      <!--<svg width="40px" height="27px" viewBox="0 0 40 27" version="1.1" xmlns="http://www.w3.org/2000/svg"-->
-      <!--xmlns:xlink="http://www.w3.org/1999/xlink">-->
-      <!--<defs>-->
-      <!--<circle id="path-1" cx="11.5" cy="11.5" r="11.5"></circle>-->
-      <!--<filter x="-15.2%" y="-15.2%" width="130.4%" height="132.6%" filterUnits="objectBoundingBox" id="filter-2">-->
-      <!--<feMorphology radius="0.25" operator="dilate" in="SourceAlpha" result="shadowSpreadOuter1"></feMorphology>-->
-      <!--<feOffset dx="0" dy="0" in="shadowSpreadOuter1" result="shadowOffsetOuter1"></feOffset>-->
-      <!--<feColorMatrix values="0 0 0 0 0.936702806   0 0 0 0 0.936702806   0 0 0 0 0.936702806  0 0 0 1 0"-->
-      <!--type="matrix" in="shadowOffsetOuter1" result="shadowMatrixOuter1"></feColorMatrix>-->
-      <!--<feOffset dx="0" dy="0" in="SourceAlpha" result="shadowOffsetOuter2"></feOffset>-->
-      <!--<feGaussianBlur stdDeviation="1" in="shadowOffsetOuter2" result="shadowBlurOuter2"></feGaussianBlur>-->
-      <!--<feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.0999773551 0" type="matrix"-->
-      <!--in="shadowBlurOuter2" result="shadowMatrixOuter2"></feColorMatrix>-->
-      <!--<feOffset dx="0" dy="0.5" in="SourceAlpha" result="shadowOffsetOuter3"></feOffset>-->
-      <!--<feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.0780117754 0" type="matrix"-->
-      <!--in="shadowOffsetOuter3" result="shadowMatrixOuter3"></feColorMatrix>-->
-      <!--<feMerge>-->
-      <!--<feMergeNode in="shadowMatrixOuter1"></feMergeNode>-->
-      <!--<feMergeNode in="shadowMatrixOuter2"></feMergeNode>-->
-      <!--<feMergeNode in="shadowMatrixOuter3"></feMergeNode>-->
-      <!--</feMerge>-->
-      <!--</filter>-->
-      <!--</defs>-->
-      <!--<g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">-->
-      <!--<g id="rowery-1" transform="translate(-172.000000, -296.000000)">-->
-      <!--<g id="rower-na-mapie" transform="translate(174.000000, 298.000000)">-->
-      <!--<text id="7" font-family=".SFNSDisplay, .SF NS Display" font-size="20" font-weight="normal"-->
-      <!--fill="#65D197">-->
-      <!--<tspan x="27.3505859" y="19">7</tspan>-->
-      <!--</text>-->
-      <!--<g id="tloTram">-->
-      <!--<use fill="black" fill-opacity="1" filter="url(#filter-2)" xlink:href="#path-1"></use>-->
-      <!--<use fill="#FFFFFF" fill-rule="evenodd" xlink:href="#path-1"></use>-->
-      <!--</g>-->
-      <!--<path-->
-      <!--d="M11.5,5.00670331 L11.5,6.30670331 C12.3302736,6.30670331 13.1326173,6.29146926 13.6125,6.38795331 C13.8511722,6.43619566 13.9908201,6.50728941 14.0390625,6.55045331 C14.0873049,6.59361721 14.1,6.58853941 14.1,6.75357831 C14.1,6.78912551 14.1076173,6.80182066 14.059375,6.85514081 C14.0111327,6.90846096 13.896875,6.99732831 13.775,7.05826581 C13.5287111,7.18014081 13.2671875,7.22076581 13.2671875,7.22076581 L12.6171875,7.36295331 L12.759375,8.01295331 L12.9015625,8.62232831 C11.3095701,8.83053176 10.0425785,9.68619566 9.14375,10.5317033 L8.5953125,9.92232831 C8.68925765,9.89185956 8.8365236,9.84107831 8.9,9.82076581 C9.42050765,9.62525816 9.55,9.49068801 9.55,8.90670331 L5.65,8.90670331 C5.65,10.077211 6.3,10.3285783 6.95,10.3285783 C7.01855485,10.3285783 7.12265625,10.303188 7.2140625,10.2879533 L8.25,11.5067033 C7.9808597,11.8443985 7.86914095,12.009438 7.7625,12.1770158 C7.70917985,12.1744769 7.6558597,12.1567033 7.6,12.1567033 C6.17050765,12.1567033 5,13.327211 5,14.7567033 C5,16.1861957 6.17050765,17.3567033 7.6,17.3567033 C9.02949235,17.3567033 10.2,16.1861957 10.2,14.7567033 C10.2,13.8629533 9.7328125,13.0707658 9.0421875,12.6035783 C9.6921875,11.7555318 11.175,10.158461 13.165625,9.92232831 L13.4296875,11.1207658 C12.2820312,11.6184221 11.5,12.758461 11.5,14.1067033 C11.5,15.927211 12.9294924,17.3567033 14.75,17.3567033 C16.5705077,17.3567033 18,15.927211 18,14.1067033 C18,12.2861957 16.5705077,10.8567033 14.75,10.8567033 C14.7373048,10.8567033 14.7220702,10.8567033 14.709375,10.8567033 L14.140625,8.29732831 C14.2447264,8.25924221 14.2472659,8.27447691 14.3640625,8.21607831 C14.5824222,8.10689846 14.8058597,7.95963316 15.0140625,7.72857831 C15.2222659,7.49752346 15.4,7.13951581 15.4,6.75357831 C15.4,6.30162551 15.2197264,5.87506301 14.9125,5.59576581 C14.6052736,5.31646926 14.2269534,5.18189846 13.85625,5.10826581 C13.1173827,4.96100051 12.2947264,5.00670331 11.5,5.00670331 Z M14.99375,12.1770158 C15.9763673,12.2912735 16.7,13.083461 16.7,14.1067033 C16.7,15.2111957 15.8544923,16.0567033 14.75,16.0567033 C13.6455077,16.0567033 12.8,15.2111957 12.8,14.1067033 C12.8,13.3830707 13.1732424,12.7762346 13.734375,12.4410783 L14.1,14.1067033 L14.1203125,14.2488908 L14.140625,14.2488908 C14.2091798,14.5332658 14.4427736,14.7567033 14.75,14.7567033 C15.1080076,14.7567033 15.4,14.464711 15.4,14.1067033 C15.4,14.0533832 15.3720701,14.0127582 15.359375,13.9645158 L15.3796875,13.9645158 L14.99375,12.1770158 Z M7.6,13.4567033 C7.68886735,13.4567033 7.7802736,13.4592422 7.8640625,13.4770158 C7.87167985,13.4846332 7.87675765,13.489711 7.884375,13.4973283 C7.9021486,13.5024068 7.9275389,13.4922505 7.9453125,13.4973283 C7.965625,13.5049457 7.9859375,13.512563 8.00625,13.5176408 C8.52421875,13.6877582 8.9,14.1828755 8.9,14.7567033 C8.9,15.4727193 8.31601595,16.0567033 7.6,16.0567033 C6.8839847,16.0567033 6.3,15.4727193 6.3,14.7567033 C6.3,14.040688 6.8839847,13.4567033 7.6,13.4567033 Z"-->
-      <!--id="Shape" fill="#000000" fill-rule="nonzero"></path>-->
-      <!--</g>-->
-      <!--</g>-->
-      <!--</g>-->
-      <!--</svg>-->
 
     </div>
   </div>

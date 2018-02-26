@@ -1,0 +1,24 @@
+<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <defs></defs>
+  <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" fill-opacity="0.300000012">
+    <g id="rowery-1" transform="translate(-134.000000, -279.000000)" fill="#4264FB">
+      <g id="moja-lok" transform="translate(134.000000, 279.000000)">
+        <circle id="loc2" cx="12" cy="12" r="12"></circle>
+      </g>
+    </g>
+  </g>
+
+  //TODO fix svg to center inner circle
+  <!--<svg width="14px" height="14px" viewBox="-5 -5 14 14" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">-->
+    <!--&lt;!&ndash; Generator: Sketch 48.2 (47327) - http://www.bohemiancoding.com/sketch &ndash;&gt;-->
+    <!--<desc>Created with Sketch.</desc>-->
+    <!--<defs></defs>-->
+    <!--<g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">-->
+      <!--<g id="rowery-1" transform="translate(-139.000000, -284.000000)" fill="#4264FB">-->
+        <!--<g id="moja-lok" transform="translate(134.000000, 279.000000)">-->
+          <!--<circle id="loc1" cx="12" cy="12" r="7"></circle>-->
+        <!--</g>-->
+      <!--</g>-->
+    <!--</g>-->
+  <!--</svg>-->
+</svg>
