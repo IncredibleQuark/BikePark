@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {GetBikeDataService} from "../../services/getBikeData/get-bike-data.service";
 import {GetAddressService} from "../../services/getAddress/get-address.service";
 import {} from '@types/googlemaps';
@@ -12,7 +12,7 @@ import * as _ from 'lodash';
 
 export class BikeDataViewComponent implements OnInit {
 
-  private loaded: boolean;
+  loaded: boolean;
   private userPosition: any;
   private BikePark: any;
   private parkLat: number;
@@ -39,32 +39,32 @@ export class BikeDataViewComponent implements OnInit {
       this.parkLat = this.BikePark[0].geometry.coordinates[1];
       this.parkLng = this.BikePark[0].geometry.coordinates[0];
 
-      if (this.userPosition) {
-        _.forEach(data.features, (item) => {
+
+      _.forEach(data.features, (item) => {
+
+        if (this.userPosition) {
           item.distance = this.calculateDistance(item.geometry.coordinates[1], item.geometry.coordinates[0]);
+        } else {
+          item.distance = '';
+        }
 
-          const latLng: string = `${item.geometry.coordinates[1]}, ${item.geometry.coordinates[0]}`;
+        const latLng: string = `${item.geometry.coordinates[1]}, ${item.geometry.coordinates[0]}`;
 
-          this.GetAddressService.getAddress(latLng).subscribe((data: any) => {
+        this.GetAddressService.getAddress(latLng).subscribe((data: any) => {
 
-            let res = data.results[0];
-            if (res) {
-              item.address = res.formatted_address
-            } else {
-              item .address = 'Poznań, somewhere';
-              console.warn('Probably api requests limit exceeded');
-            }
+          let res = data.results[0];
+          if (res) {
+            item.address = res.formatted_address
+          } else {
+            item .address = 'Poznań, somewhere';
+            console.warn('Probably api requests limit exceeded');
+          }
 
-          }, (err) => {
-            console.warn(err);
-          });
+        }, (err) => {
+          console.warn(err);
         });
+      });
 
-      } else {
-        this.getUserPosition();
-      }
-
-      console.log(data);
       this.loaded = true;
 
     }, (err) => {
@@ -75,7 +75,9 @@ export class BikeDataViewComponent implements OnInit {
 
   getUserPosition() {
     if (window.navigator.geolocation) {
-      window.navigator.geolocation.getCurrentPosition(this.setUserPosition.bind(this));
+      window.navigator.geolocation.getCurrentPosition(this.setUserPosition.bind(this), (err) => {
+        console.warn('There is no user location');
+      });
     }
   }
 
@@ -101,12 +103,23 @@ export class BikeDataViewComponent implements OnInit {
   public storeMapReady(map){
     this.map = map;
     this.map.fitBounds(this.findStoresBounds());
+
+    if (!this.userPosition) {
+      google.maps.event.addListenerOnce(map, 'bounds_changed', (event) => {
+        map.setZoom(15);
+      });
+    }
+
   }
 
   public findStoresBounds(){
       let bounds:any = new google.maps.LatLngBounds();
-      bounds.extend(new google.maps.LatLng(this.userLat, this.userLng));
+
+      if (this.userPosition) {
+        bounds.extend(new google.maps.LatLng(this.userLat, this.userLng));
+      }
       bounds.extend(new google.maps.LatLng(this.parkLat, this.parkLng));
+
     return bounds;
   }
 
