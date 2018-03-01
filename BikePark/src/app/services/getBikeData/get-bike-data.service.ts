@@ -10,7 +10,6 @@ export class GetBikeDataService {
   getBikeData () {
     let headers = new HttpHeaders();
     headers.append('Content-Type','application/json');
-    headers.append('Access-Control-Allow-Origin','*');
     return this.http.get('http://www.poznan.pl/mim/plan/map_service.html?mtype=pub_transport&co=stacje_rowerowe',{headers: headers});
   }
 }
