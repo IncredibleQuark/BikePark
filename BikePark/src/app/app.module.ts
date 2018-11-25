@@ -18,7 +18,7 @@ import {AgmCoreModule, GoogleMapsAPIWrapper} from "@agm/core";
     BrowserModule,
     HttpClientModule,
     AgmCoreModule.forRoot({
-      apiKey: 'AIzaSyB65iaJJiE2r_pULN6ltUVZqgY9HshHWqA'
+      apiKey: 'xxxxxxxxxxx'
     })
   ],
   providers: [GetBikeDataService, GoogleMapsAPIWrapper, GetAddressService],
